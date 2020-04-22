@@ -1,0 +1,32 @@
+<div class="company-list">
+    <h2>Financial status of companies.</h2>
+    <div class="list">
+        <div class="list-header">
+            <div class="list-header-item list-col">
+                <span>Id</span>
+            </div>
+            <div class="list-header-item list-col">
+                <span>Name</span>
+            </div>
+            <div class="list-header-item list-col">
+                <span>City</span>
+            </div>
+            <div class="list-header-item list-col">
+                <span>Total income</span>
+            </div>
+            <div class="list-header-item list-col">
+                <span>Avg. income</span>
+            </div>
+            <div class="list-header-item list-col">
+                <span>Last month income</span>
+            </div>
+        </div>
+        <div class="list-content">
+            <app-company-list-item class="list-row" [company]="company" *ngFor="let company of (companies$ | async)"></app-company-list-item>
+        </div>
+        <div class="list-pagination">
+
+        </div>
+    </div>
+
+</div>

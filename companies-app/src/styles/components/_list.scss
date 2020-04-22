@@ -1,0 +1,32 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+
+    &-header, &-row {
+        display: grid;
+        grid-template-columns: 40px repeat(5, 1fr);
+    }
+
+    &-header {
+        font-weight: 600;
+    }
+
+    &-col {
+        padding: .5rem;
+    }
+
+    &-content {
+        
+    }
+
+    &-row {
+        
+    }
+
+    &-pagination {
+
+    }
+}

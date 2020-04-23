@@ -1,9 +1,18 @@
-export interface CompanyListSearch {
+import { Observable } from 'rxjs';
+
+export interface Sorting {
     sortBy: string;
-    sortOrder: string;
+    sortOrder?: boolean | 'asc' | 'desc';
+}
+
+export interface Pagination {
     page: number;
     perPage: number;
-    searchText: string; 
+    pages?: number;
+}
+
+export interface Searching {
+    searchText: string
 }
 
 export interface Income {
@@ -13,19 +22,22 @@ export interface Income {
 
 export interface IncomeList {
     id: number;
-    values: Income[];
+    incomes: Income[];
 }
 
-export interface Company {
+export class Company {
     id: number;
     name: string;
     city: string;
     incomes?: Income[];
-    totalIncome?: number;
+    totalIncome: number;
     averageIncome?: number;
     lastMonthIncome?: number;
 }
 
 export interface CompaniesStateModel {
     companies: Company[];
+    sort?: Sorting;
+    pagination?: Pagination;
+    searching?: Searching;
 }

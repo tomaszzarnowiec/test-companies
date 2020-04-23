@@ -30,7 +30,9 @@
             "styles": [
               "src/styles/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/scripts/iconify.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -12,6 +12,10 @@
 
     &-header {
         font-weight: 600;
+
+        span {
+            cursor: pointer;
+        }
     }
 
     &-col {

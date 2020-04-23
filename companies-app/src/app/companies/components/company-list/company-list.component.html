@@ -3,29 +3,31 @@
     <div class="list">
         <div class="list-header">
             <div class="list-header-item list-col">
-                <span>Id</span>
+                <span (click)="sort('id')">Id</span>
             </div>
             <div class="list-header-item list-col">
-                <span>Name</span>
+                <span (click)="sort('name')">Name</span>
             </div>
             <div class="list-header-item list-col">
-                <span>City</span>
+                <span (click)="sort('city')">City</span>
             </div>
             <div class="list-header-item list-col">
-                <span>Total income</span>
+                <span (click)="sort('totalIncome')">Total income</span>
             </div>
             <div class="list-header-item list-col">
-                <span>Avg. income</span>
+                <span (click)="sort('averageIncome')">Avg. income</span>
             </div>
             <div class="list-header-item list-col">
-                <span>Last month income</span>
+                <span (click)="sort('lastMonthIncome')">Last month income</span>
             </div>
         </div>
         <div class="list-content">
             <app-company-list-item class="list-row" [company]="company" *ngFor="let company of (companies$ | async)"></app-company-list-item>
         </div>
         <div class="list-pagination">
-
+            <!-- <span *ngFor="let page of pages">
+                {{page}}
+            </span> -->
         </div>
     </div>
 

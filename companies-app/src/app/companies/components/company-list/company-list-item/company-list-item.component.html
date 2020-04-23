@@ -8,11 +8,11 @@
     {{ company.city }}
 </div>
 <div class="list-col">
-    12 000,00
+    {{ company.totalIncome | currency:"$":"symbol" }}
 </div>
 <div class="list-col">
-    2 000,00
+    {{ company.averageIncome | currency:"$":"symbol" }}
 </div>
 <div class="list-col">
-    10 000,00
+    {{ company.lastMonthIncome | currency:"$":"symbol" }}
 </div>

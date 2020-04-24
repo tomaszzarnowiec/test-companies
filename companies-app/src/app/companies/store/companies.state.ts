@@ -16,7 +16,7 @@ import * as moment from 'moment';
 
 @Injectable()
 export class CompaniesState {
-    fetchedCompanies: Company[];
+    fetchedCompanies: Company[] = [];
 
     constructor(private companiesService: CompaniesService) {
     
@@ -44,63 +44,52 @@ export class CompaniesState {
     @Action(CompaniesActions.GetCompanyList)
     getList(context: StateContext<CompaniesStateModel>, action: CompaniesActions.GetCompanyList) {
         return this.companiesService.getList().pipe().subscribe(companies => {
-            
-            console.log(companies);
-            
+            // get income data for each company
+            // can wrap it by another action, but I want to patch state when all data loaded once
             _.forEach(companies, (company) => {
-                context.dispatch(new CompaniesActions.GetCompanyIncome(company))
+
+                this.companiesService.getIncome(company.id).toPromise().then(incomes => {
+                    
+                    const totalIncome = _.sumBy(incomes, i => parseFloat(i.value));
+                    const averageIncome = totalIncome / incomes.length;
+                    const lastMonthIncome = _.sumBy(incomes, i => {
+                        // current date is hardcoded to October for display values for last month (August), no data for march 2020
+                        const currentDate = "2019-10-10";
+                        const lastMonthStart = moment(currentDate, 'YYYY-MM-DD').subtract(1, 'month').startOf('month').subtract(1, "day");
+                        const lastMonthEnd = moment(currentDate, 'YYYY-MM-DD').subtract(1, 'month').endOf('month');
+                        const isbet = moment(i.date).isBetween(lastMonthStart, lastMonthEnd);
+                        return isbet ? parseFloat(i.value) : 0
+                    });
+        
+                    _.extend(company, {
+                        totalIncome: totalIncome,
+                        averageIncome: averageIncome,
+                        lastMonthIncome: lastMonthIncome,
+                        incomes: incomes
+                    })
+
+                    this.fetchedCompanies.push(company);
+
+                    if(this.fetchedCompanies.length === companies.length) {
+                        // if all records was get -> set state
+                        context.patchState({
+                            companies: this.fetchedCompanies,
+                            sort: {},
+                            pagination: {
+                                perPage: 50,
+                                pages: [...Array(_.round(companies.length / 50, 0)).keys()].map(i => i+1)
+                            }
+                        })
+
+                        context.dispatch(new CompaniesActions.Paginate({
+                            page: 1
+                        }))
+                    }
+                    
+                })
             })
         })
 
-    }
-
-    @Action(CompaniesActions.GetCompanyIncome)
-    getIncome(context: StateContext<CompaniesStateModel>, { company }: CompaniesActions.GetCompanyIncome) {
-        return this.companiesService.getIncome(company.id).toPromise().then(incomes => {
-            
-            const state = context.getState();
-           
-            let updatedCompany = <Company> {};
-
-            _.extend(updatedCompany, company);
-            
-            const totalIncome = _.sumBy(incomes, i => parseFloat(i.value));
-            const averageIncome = totalIncome / incomes.length;
-            const lastMonthIncome = _.sumBy(incomes, i => {
-                // current date is hardcoded to October for display values for last month (August), no data for march 2020
-                const currentDate = "2019-10-10";
-                const lastMonthStart = moment(currentDate, 'YYYY-MM-DD').subtract(1, 'month').startOf('month').subtract(1, "day");
-                const lastMonthEnd = moment(currentDate, 'YYYY-MM-DD').subtract(1, 'month').endOf('month');
-                const isbet = moment(i.date).isBetween(lastMonthStart, lastMonthEnd);
-                return isbet ? parseFloat(i.value) : 0
-            });
-
-            _.extend(updatedCompany, {
-                totalIncome: totalIncome,
-                averageIncome: averageIncome,
-                lastMonthIncome: lastMonthIncome,
-                incomes: incomes
-            })
-
-            context.patchState({
-                companies: _.orderBy([
-                    ...state.companies,
-                    updatedCompany
-                ], 'id', true),
-                sort: {
-                    sortBy: 'id',
-                    sortOrder: true
-                },
-                pagination: {
-                    page: 1,
-                    perPage: 50,
-                    pages: (state.companies.length / 50) + 1
-                }
-            })
-
-            this.fetchedCompanies = context.getState().companies;
-            
-        })
     }
 
     @Action(CompaniesActions.Sort)
@@ -109,15 +98,20 @@ export class CompaniesState {
 
         const sortingOrder = state.sort.sortBy === sort.sortBy ? !state.sort.sortOrder : true;
 
-        this.fetchedCompanies = _.orderBy(state.companies, sort.sortBy, sortingOrder ? 'asc' : 'desc');
+        console.log(this.fetchedCompanies);
+        
+        this.fetchedCompanies = _.orderBy(this.fetchedCompanies, sort.sortBy, sortingOrder ? 'asc' : 'desc');
 
         context.patchState({
-            companies: this.fetchedCompanies,
             sort: {
                 sortBy: sort.sortBy,
                 sortOrder: sortingOrder
             } 
         })
+
+        context.dispatch(new CompaniesActions.Paginate({
+            page: state.pagination.page
+        }))
     }
 
     @Action(CompaniesActions.Search)
@@ -129,9 +123,9 @@ export class CompaniesState {
     pagination(context: StateContext<CompaniesStateModel>, { pagination }: CompaniesActions.Paginate) {
         const state = context.getState();
 
-        const start = (pagination.page - 1) * pagination.perPage;
+        const start = (pagination.page - 1) * state.pagination.perPage;
 
-        const end = pagination.page * pagination.perPage;
+        const end = pagination.page * state.pagination.perPage;
 
         context.patchState({
             companies: _.slice(this.fetchedCompanies, start, end),

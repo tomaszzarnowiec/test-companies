@@ -1,34 +1,52 @@
-<div class="company-list">
-    <h2>Financial status of companies.</h2>
-    <div class="list">
-        <div class="list-header">
-            <div class="list-header-item list-col">
-                <span (click)="sort('id')">Id</span>
+<div class="panel">
+    <div class="panel-heading">
+        Financial status of companies.
+        <span class="panel-subtitle">Some financial data of some companies.</span>
+    </div>
+    <div class="panel-body">
+        <div class="list">
+            <div class="list-header">
+                <div class="list-col">
+                    <span [ngClass]="{
+                        'desc': (sorting$ | async)?.sortBy === 'id' && !(sorting$ | async)?.sortOrder,
+                        'asc': (sorting$ | async)?.sortBy === 'id' && (sorting$ | async)?.sortOrder}" (click)="sort('id')">Id</span>
+                </div>
+                <div class="list-col">
+                    <span class="{{ getSortingClass('name') }}" (click)="sort('name')">Name</span>
+                </div>
+                <div class="list-col">
+                    <span [ngClass]="{
+                        'desc': (sorting$ | async)?.sortBy === 'city' && !(sorting$ | async)?.sortOrder,
+                        'asc': (sorting$ | async)?.sortBy === 'city' && (sorting$ | async)?.sortOrder}" (click)="sort('city')">City</span>
+                </div>
+                <div class="list-col">
+                    <span [ngClass]="{
+                        'desc': (sorting$ | async)?.sortBy === 'totalIncome' && !(sorting$ | async)?.sortOrder,
+                        'asc': (sorting$ | async)?.sortBy === 'totalIncome' && (sorting$ | async)?.sortOrder}" (click)="sort('totalIncome')">Total income</span>
+                </div>
+                <div class="list-col">
+                    <span [ngClass]="{
+                        'desc': (sorting$ | async)?.sortBy === 'averageIncome' && !(sorting$ | async)?.sortOrder,
+                        'asc': (sorting$ | async)?.sortBy === 'averageIncome' && (sorting$ | async)?.sortOrder}" (click)="sort('averageIncome')">Avg. income</span>
+                </div>
+                <div class="list-col">
+                    <span [ngClass]="{
+                        'desc': (sorting$ | async)?.sortBy === 'lastMonthIncome' && !(sorting$ | async)?.sortOrder,
+                        'asc': (sorting$ | async)?.sortBy === 'lastMonthIncome' && (sorting$ | async)?.sortOrder}" (click)="sort('lastMonthIncome')">Last month income</span>
+                </div>
             </div>
-            <div class="list-header-item list-col">
-                <span (click)="sort('name')">Name</span>
+            <div class="list-content">
+                <app-company-list-item class="list-row" [company]="company" *ngFor="let company of (companies$ | async)"></app-company-list-item>
             </div>
-            <div class="list-header-item list-col">
-                <span (click)="sort('city')">City</span>
+            <div class="list-pagination">
+                <ul>
+                    <li *ngFor="let page of (paging$ | async)?.pages">
+                        <button class="btn" [ngClass]="{'active': currentPage === page}" (click)="setPage(page)">
+                            {{ page }}
+                        </button>
+                    </li>
+                </ul>
             </div>
-            <div class="list-header-item list-col">
-                <span (click)="sort('totalIncome')">Total income</span>
-            </div>
-            <div class="list-header-item list-col">
-                <span (click)="sort('averageIncome')">Avg. income</span>
-            </div>
-            <div class="list-header-item list-col">
-                <span (click)="sort('lastMonthIncome')">Last month income</span>
-            </div>
-        </div>
-        <div class="list-content">
-            <app-company-list-item class="list-row" [company]="company" *ngFor="let company of (companies$ | async)"></app-company-list-item>
-        </div>
-        <div class="list-pagination">
-            <!-- <span *ngFor="let page of pages">
-                {{page}}
-            </span> -->
         </div>
     </div>
-
 </div>

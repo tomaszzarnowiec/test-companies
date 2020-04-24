@@ -1,0 +1,15 @@
+.btn {
+    outline: none;
+    background-color: #f5f5f5;
+    color: $color-font-muted;
+    padding: .4em .8em;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: ease-in-out .3s background-color, color;
+
+    &.active {
+        background-color: $color-info;
+        color: $color-font-light;
+    }
+}

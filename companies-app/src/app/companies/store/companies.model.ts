@@ -1,14 +1,14 @@
 import { Observable } from 'rxjs';
 
 export interface Sorting {
-    sortBy: string;
+    sortBy?: string;
     sortOrder?: boolean | 'asc' | 'desc';
 }
 
 export interface Pagination {
-    page: number;
-    perPage: number;
-    pages?: number;
+    page?: number;
+    perPage?: number;
+    pages?: number[];
 }
 
 export interface Searching {

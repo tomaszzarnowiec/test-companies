@@ -1,36 +1,55 @@
 .list {
     display: flex;
     flex-direction: column;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 3px;
 
     &-header, &-row {
         display: grid;
-        grid-template-columns: 40px repeat(5, 1fr);
+        grid-template-columns: 40px 2fr repeat(4, 1fr);
+        margin: 0 -20px;
+        padding: 0 20px;
     }
 
     &-header {
         font-weight: 600;
+        margin-bottom: 10px;
 
         span {
             cursor: pointer;
+
+            &.asc {
+                &:after {
+                    content: "\2193";
+                    margin-left: .4em;
+                }
+            }
+
+            &.desc {
+                &:after {
+                    content: "\2191";
+                    margin-left: .4em;
+                }
+            }
         }
     }
 
     &-col {
-        padding: .5rem;
-    }
-
-    &-content {
-        
+        padding: .5rem 0;
     }
 
     &-row {
-        
+        &:nth-child(even) {
+            background-color: #f5f5f5;
+        }
     }
 
     &-pagination {
+        ul {
+            display: flex;
+            justify-content: center;
 
+            li {
+                padding: 10px 5px;
+            }
+        }
     }
 }

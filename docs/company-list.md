@@ -29,13 +29,19 @@ search(evt)
 
 Component listen on data (list of companies) from store by selector
 ```
-CompaniesState.getCompanyList
+@Select(CompaniesState.getCompanyList) companies$: Observable<Company[]>;
 ```
 and listen on table settings changed through store
 ```
-CompaniesState.getSorting
-CompaniesState.getPaging
-CompaniesState.isLoading
+@Select(CompaniesState.getSorting) sorting$: Observable<Sorting>;
+@Select(CompaniesState.getPaging) paging$: Observable<Pagination>;
+@Select(CompaniesState.isLoading) isLoading$: Observable<boolean>;
+```
+
+In template we can display arrows up and down next to header labels by adding function which return class
+
+```
+getSortingClass(name: string)
 ```
 
 ### Structure

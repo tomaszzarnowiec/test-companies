@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Company, IncomeList, Income } from '../store/companies.model';
 import { map } from 'rxjs/operators';
 import { Observable, combineLatest } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class CompaniesService {
@@ -12,11 +13,11 @@ export class CompaniesService {
     }
     
     getList() {
-        return this.http.get<Company[]>('https://recruitment.hal.skygate.io/companies');
+        return this.http.get<Company[]>(environment.endpoints.companies);
     }
 
     getIncome(companyId: number): Observable<Income[]> {
-        return this.http.get<IncomeList>('https://recruitment.hal.skygate.io/incomes/' + companyId)
+        return this.http.get<IncomeList>(environment.endpoints.incomes + "/" + companyId)
         .pipe(
             map(resp => {
                 return resp.incomes

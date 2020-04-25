@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  endpoints: {
+    companies: "https://recruitment.hal.skygate.io/companies",
+    incomes: "https://recruitment.hal.skygate.io/incomes"
+  }
 };
 
 /*

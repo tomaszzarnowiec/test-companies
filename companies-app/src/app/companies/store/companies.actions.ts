@@ -6,14 +6,8 @@ export namespace CompaniesActions {
         static readonly type = '[Companies] GetCompanyList';
     }
 
-    export class GetCompanyIncome {
-        static readonly type = '[Companies] GetCompanyIncome';
-        constructor(public company: Company) { }
-    }
-
     export class Apply {
         static readonly type = '[Companies] Apply';
-        constructor () {}
     }
 
     export class Sort {

@@ -7,11 +7,7 @@ import { environment } from 'src/environments/environment';
 
 import { NgxsModule } from '@ngxs/store';
 
-import { CompanyListComponent } from './companies/components/company-list/company-list.component';
-import { CompanyListItemComponent } from './companies/components/company-list/company-list-item/company-list-item.component';
-import { CompaniesService } from './companies/services/companies.service';
 import { CompaniesState } from './companies/store/companies.state';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CompaniesModule } from './companies/companies.module';
 
 @NgModule({

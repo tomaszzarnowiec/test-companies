@@ -64,8 +64,6 @@ export class CompaniesState {
     @Action(CompaniesActions.GetCompanyList)
     getList(context: StateContext<CompaniesStateModel>, action: CompaniesActions.GetCompanyList) {
         return this.companiesService.getList().pipe().subscribe(companies => {
-            const state = context.getState();
-            
             // get income data for each company
             // can wrap it by another action, but I want to patch state when all data loaded once
             _.forEach(companies, (company) => {

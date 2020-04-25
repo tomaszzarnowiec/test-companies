@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { isString } from 'util';
 
 @Pipe({
     name: 'search'

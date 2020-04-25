@@ -136,7 +136,7 @@ export class CompaniesState {
             pagination: {
                 ...state.pagination,
                 page: (sorted.length < state.pagination.perPage) ? 1 : state.pagination.page,
-                pages: [...Array(_.floor(sorted.length / state.pagination.perPage, 0)).keys()].map(i => i+1)
+                pages: [...Array(_.ceil(sorted.length / state.pagination.perPage, 0)).keys()].map(i => i+1)
             }
         })
     }

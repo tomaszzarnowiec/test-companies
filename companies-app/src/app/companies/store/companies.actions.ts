@@ -1,4 +1,4 @@
-import { Company, Sorting, Searching, Pagination } from './companies.model';
+import { Sorting, Searching, Pagination } from './companies.model';
 
 export namespace CompaniesActions {
 

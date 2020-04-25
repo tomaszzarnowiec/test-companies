@@ -1,5 +1,3 @@
-import { Observable } from 'rxjs';
-
 export interface Sorting {
     sortBy?: string;
     sortOrder?: boolean | 'asc' | 'desc';

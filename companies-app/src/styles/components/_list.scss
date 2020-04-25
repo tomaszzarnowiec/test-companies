@@ -1,18 +1,22 @@
 .list {
-    display: flex;
-    flex-direction: column;
+    display: table;
+    width: 100%;
 
-    &-header, &-row {
-        display: grid;
-        grid-template-columns: 40px 2fr repeat(4, 1fr);
+    &-row, &-header {
         margin: 0 -20px;
         padding: 0 20px;
+        align-items: center;
+
+        .column {
+            padding: .5rem 5px .5rem 0;
+        }
     }
 
     &-header {
+        display: table-header-group;
         font-weight: 600;
         margin-bottom: 10px;
-
+        
         span {
             cursor: pointer;
 
@@ -32,11 +36,13 @@
         }
     }
 
-    &-col {
-        padding: .5rem 0;
+    &-content {
+        display: table-row-group;
     }
 
     &-row {
+        display: table-row;
+
         &:nth-child(even) {
             background-color: #f5f5f5;
         }
@@ -50,6 +56,47 @@
             li {
                 padding: 10px 5px;
             }
+        }
+    }
+}
+
+.companies {
+    .list-row, .list-header {
+        display: grid;
+        grid-template-rows: auto auto;
+        grid-template-columns: 40px repeat(3, 1fr);
+        grid-template-areas: "id name name city" "id total avg lastmonth";
+
+        .id { grid-area: id; }
+        .name { grid-area: name; font-weight: 600; }
+        .city { grid-area: city; }
+        .total { grid-area: total; }
+        .avg { grid-area: avg; }
+        .last-month { grid-area: lastmonth; }
+
+        .label {
+            display: block;
+            font-size: .9em;
+            font-weight: 400;
+        }
+
+        @media (min-width: 640px) and (max-width: 1023px) {
+            grid-template-columns: 40px 2fr repeat(3, 1fr);
+            grid-template-areas: "id name total avg lastmonth" "id city total avg lastmonth";
+
+            .total .label, 
+            .avg .label, 
+            .last-month .label { 
+                display: none; 
+            }
+        }
+
+        @media (min-width: 1024px) {
+            grid-template-rows: auto;
+            grid-template-columns: 40px 2fr repeat(4, 1fr);
+            grid-template-areas: "id name city total avg lastmonth";
+
+            .label {display: none; }
         }
     }
 }

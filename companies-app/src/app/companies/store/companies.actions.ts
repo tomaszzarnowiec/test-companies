@@ -11,6 +11,11 @@ export namespace CompaniesActions {
         constructor(public company: Company) { }
     }
 
+    export class Apply {
+        static readonly type = '[Companies] Apply';
+        constructor () {}
+    }
+
     export class Sort {
         static readonly type = '[Companies] Sort';
         constructor (public sort: Sorting) {}

@@ -1,41 +1,37 @@
 <div class="panel">
-    <div class="panel-heading">
-        Financial status of companies.
-        <span class="panel-subtitle">Some financial data of some companies.</span>
+    <div class="panel-heading d-flex space-between">
+        <div>
+            Financial status of companies.
+            <span class="panel-subtitle">Some financial data of some companies.</span>
+        </div>
+        <div>
+            <input type="text" [(ngModel)]="searchText" (keyup)="search($event)" placeholder="search...">
+        </div>
     </div>
     <div class="panel-body">
-        <div class="list">
+        <div class="list companies">
             <div class="list-header">
-                <div class="list-col">
-                    <span [ngClass]="{
-                        'desc': (sorting$ | async)?.sortBy === 'id' && !(sorting$ | async)?.sortOrder,
-                        'asc': (sorting$ | async)?.sortBy === 'id' && (sorting$ | async)?.sortOrder}" (click)="sort('id')">Id</span>
+                <div class="column id">
+                    <span class="{{ getSortingClass('id') }}" (click)="sort('id')">Id</span>
                 </div>
-                <div class="list-col">
+                <div class="column name">
                     <span class="{{ getSortingClass('name') }}" (click)="sort('name')">Name</span>
                 </div>
-                <div class="list-col">
-                    <span [ngClass]="{
-                        'desc': (sorting$ | async)?.sortBy === 'city' && !(sorting$ | async)?.sortOrder,
-                        'asc': (sorting$ | async)?.sortBy === 'city' && (sorting$ | async)?.sortOrder}" (click)="sort('city')">City</span>
+                <div class="column city">
+                    <span class="{{ getSortingClass('city') }}" (click)="sort('city')">City</span>
                 </div>
-                <div class="list-col">
-                    <span [ngClass]="{
-                        'desc': (sorting$ | async)?.sortBy === 'totalIncome' && !(sorting$ | async)?.sortOrder,
-                        'asc': (sorting$ | async)?.sortBy === 'totalIncome' && (sorting$ | async)?.sortOrder}" (click)="sort('totalIncome')">Total income</span>
+                <div class="column total">
+                    <span class="{{ getSortingClass('totalIncome') }}" (click)="sort('totalIncome')">Total income</span>
                 </div>
-                <div class="list-col">
-                    <span [ngClass]="{
-                        'desc': (sorting$ | async)?.sortBy === 'averageIncome' && !(sorting$ | async)?.sortOrder,
-                        'asc': (sorting$ | async)?.sortBy === 'averageIncome' && (sorting$ | async)?.sortOrder}" (click)="sort('averageIncome')">Avg. income</span>
+                <div class="column avg">
+                    <span class="{{ getSortingClass('averageIncome') }}" (click)="sort('averageIncome')">Avg. income</span>
                 </div>
-                <div class="list-col">
-                    <span [ngClass]="{
-                        'desc': (sorting$ | async)?.sortBy === 'lastMonthIncome' && !(sorting$ | async)?.sortOrder,
-                        'asc': (sorting$ | async)?.sortBy === 'lastMonthIncome' && (sorting$ | async)?.sortOrder}" (click)="sort('lastMonthIncome')">Last month income</span>
+                <div class="column last-month">
+                    <span class="{{ getSortingClass('lastMonthIncome') }}" (click)="sort('lastMonthIncome')">Last month income</span>
                 </div>
             </div>
             <div class="list-content">
+                <div class="loading" *ngIf="(isLoading$ | async)">Loading...</div>
                 <app-company-list-item class="list-row" [company]="company" *ngFor="let company of (companies$ | async)"></app-company-list-item>
             </div>
             <div class="list-pagination">

@@ -10,13 +10,28 @@ import * as moment from 'moment';
 @State<CompaniesStateModel>({
     name: 'Companies',
     defaults: {
-        companies: []
+        allCompanies: [],
+        companies: [],
+        pagination: {
+            page: 1,
+            perPage: 50,
+            pages: []
+        },
+        sort: {
+            sortBy: null,
+            sortOrder: null
+        },
+        searching: {
+            searchText: ""
+        },
+        isLoading: true
     }
 })
 
 @Injectable()
 export class CompaniesState {
-    fetchedCompanies: Company[] = [];
+
+    tmpCompanies: Company[] = [];
 
     constructor(private companiesService: CompaniesService) {
     
@@ -24,6 +39,11 @@ export class CompaniesState {
 
     ngxsOnInit(context: StateContext<CompaniesStateModel>) {
         context.dispatch(CompaniesActions.GetCompanyList);
+    }
+
+    @Selector()
+    static isLoading(state: CompaniesStateModel) {
+        return state.isLoading;
     }
 
     @Selector()
@@ -44,6 +64,8 @@ export class CompaniesState {
     @Action(CompaniesActions.GetCompanyList)
     getList(context: StateContext<CompaniesStateModel>, action: CompaniesActions.GetCompanyList) {
         return this.companiesService.getList().pipe().subscribe(companies => {
+            const state = context.getState();
+            
             // get income data for each company
             // can wrap it by another action, but I want to patch state when all data loaded once
             _.forEach(companies, (company) => {
@@ -68,22 +90,16 @@ export class CompaniesState {
                         incomes: incomes
                     })
 
-                    this.fetchedCompanies.push(company);
+                    this.tmpCompanies.push(company);
 
-                    if(this.fetchedCompanies.length === companies.length) {
+                    if(this.tmpCompanies.length === companies.length) {
                         // if all records was get -> set state
                         context.patchState({
-                            companies: this.fetchedCompanies,
-                            sort: {},
-                            pagination: {
-                                perPage: 50,
-                                pages: [...Array(_.round(companies.length / 50, 0)).keys()].map(i => i+1)
-                            }
+                            allCompanies: this.tmpCompanies,
+                            isLoading: false
                         })
 
-                        context.dispatch(new CompaniesActions.Paginate({
-                            page: 1
-                        }))
+                        context.dispatch(new CompaniesActions.Apply())
                     }
                     
                 })
@@ -92,15 +108,46 @@ export class CompaniesState {
 
     }
 
+    @Action(CompaniesActions.Apply)
+    apply(context: StateContext<CompaniesStateModel>, action: CompaniesActions.Apply) {
+        const state = context.getState();
+
+        const filtered = state.allCompanies.filter(item => {
+            const st = state.searching.searchText.toLowerCase();
+            return  item.id.toString().indexOf(st) > -1 ||
+                    item.name.toLowerCase().indexOf(st) > -1 ||
+                    item.city.toLowerCase().indexOf(st) > -1 ||
+                    item.totalIncome.toString().indexOf(st) > -1 ||
+                    item.averageIncome.toString().indexOf(st) > -1 ||
+                    item.lastMonthIncome.toString().indexOf(st) > -1
+        })
+
+        const sorted = _.orderBy(
+            filtered, 
+            state.sort.sortBy, 
+            state.sort.sortOrder ? 'asc' : 'desc'
+        )
+        
+        const start = (state.pagination.page - 1) * state.pagination.perPage;
+        const end = state.pagination.page * state.pagination.perPage;
+
+        const paginated = (sorted.length < state.pagination.perPage) ? sorted : _.slice(sorted, start, end);
+
+        context.patchState({
+            companies: paginated,
+            pagination: {
+                ...state.pagination,
+                page: (sorted.length < state.pagination.perPage) ? 1 : state.pagination.page,
+                pages: [...Array(_.floor(sorted.length / state.pagination.perPage, 0)).keys()].map(i => i+1)
+            }
+        })
+    }
+
     @Action(CompaniesActions.Sort)
     sort(context: StateContext<CompaniesStateModel>, { sort }: CompaniesActions.Sort) {
         const state = context.getState();
 
         const sortingOrder = state.sort.sortBy === sort.sortBy ? !state.sort.sortOrder : true;
-
-        console.log(this.fetchedCompanies);
-        
-        this.fetchedCompanies = _.orderBy(this.fetchedCompanies, sort.sortBy, sortingOrder ? 'asc' : 'desc');
 
         context.patchState({
             sort: {
@@ -109,30 +156,29 @@ export class CompaniesState {
             } 
         })
 
-        context.dispatch(new CompaniesActions.Paginate({
-            page: state.pagination.page
-        }))
+        context.dispatch(new CompaniesActions.Apply())
     }
 
     @Action(CompaniesActions.Search)
     search(context: StateContext<CompaniesStateModel>, { search }: CompaniesActions.Search) {
-        
+        context.patchState({
+            searching: search
+        })
+
+        context.dispatch(new CompaniesActions.Apply())
     }
 
     @Action(CompaniesActions.Paginate)
     pagination(context: StateContext<CompaniesStateModel>, { pagination }: CompaniesActions.Paginate) {
         const state = context.getState();
 
-        const start = (pagination.page - 1) * state.pagination.perPage;
-
-        const end = pagination.page * state.pagination.perPage;
-
         context.patchState({
-            companies: _.slice(this.fetchedCompanies, start, end),
             pagination: {
                 ...state.pagination,
                 page: pagination.page
             }
         })
+
+        context.dispatch(new CompaniesActions.Apply())
     }
 }

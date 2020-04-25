@@ -1,18 +1,23 @@
-<div class="list-col">
+<div class="column id">
     {{ company.id }}
 </div>
-<div class="list-col">
+<div class="column name">
+    <span class="color-muted label">Name</span>
     {{ company.name }}
 </div>
-<div class="list-col">
+<div class="column city">
+    <span class="color-muted label">City</span>
     {{ company.city }}
 </div>
-<div class="list-col">
+<div class="column total">
+    <span class="color-muted label">Total income</span>
     {{ company.totalIncome | currency:"$":"symbol" }}
 </div>
-<div class="list-col">
+<div class="column avg">
+    <span class="color-muted label">Avg. income</span>
     {{ company.averageIncome | currency:"$":"symbol" }}
 </div>
-<div class="list-col">
+<div class="column last-month">
+    <span class="color-muted label">Last month inc.</span>
     {{ company.lastMonthIncome | currency:"$":"symbol" }}
 </div>

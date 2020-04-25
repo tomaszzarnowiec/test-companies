@@ -36,8 +36,10 @@ export class Company {
 }
 
 export interface CompaniesStateModel {
+    allCompanies: Company[],
     companies: Company[];
     sort?: Sorting;
     pagination?: Pagination;
     searching?: Searching;
+    isLoading: boolean;
 }

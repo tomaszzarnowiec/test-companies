@@ -4,6 +4,7 @@ import { CompaniesState } from '../../store/companies.state';
 import { Observable, combineLatest } from 'rxjs';
 import { Company, Pagination, Sorting } from '../../store/companies.model';
 import { CompaniesActions } from '../../store/companies.actions';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-company-list',
@@ -16,11 +17,15 @@ export class CompanyListComponent implements OnInit {
   @Select(CompaniesState.getSorting) sorting$: Observable<Sorting>;
   @Select(CompaniesState.getPaging) paging$: Observable<Pagination>;
 
-  pages: number[] = [];
+  @Select(CompaniesState.isLoading) isLoading$: Observable<boolean>;
+
   currentPage: number;
   currentSorting: Sorting = {};
+  searchText: string;
 
-  constructor(private store: Store) { }
+  constructor(private store: Store) { 
+    this.search = _.debounce(this.search, 1000);
+  }
 
   ngOnInit(): void {
 
@@ -47,6 +52,12 @@ export class CompanyListComponent implements OnInit {
   setPage(page: number) {
     this.store.dispatch(new CompaniesActions.Paginate({
       page: page
+    }))
+  }
+
+  search(evt) {
+    this.store.dispatch(new CompaniesActions.Search({
+      searchText: evt.target.value
     }))
   }
 

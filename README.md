@@ -18,6 +18,7 @@ node v10.13.0+
 Clone a repository and run following commands:
 
 ```
+cd test-companies
 cd companies-app
 ```
 
@@ -32,6 +33,8 @@ Run Angular app
 ```
 ng serve
 ```
+
+Go to `http://localhost:4200` for view the app in your browser
 
 ## State management
 
